@@ -2,28 +2,35 @@ package com.fabiokusaba.calculadoraimc
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.fabiokusaba.calculadoraimc.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var btnCalcular: Button
+    private lateinit var editPeso: EditText
+    private lateinit var editAltura: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        binding.buttonCalcular.setOnClickListener {
-            val peso = binding.editPeso.text.toString().trim().toDouble()
-            val altura = binding.editAltura.text.toString().trim().toDouble()
+        btnCalcular = findViewById(R.id.btn_calcular)
+        editPeso = findViewById(R.id.edit_peso)
+        editAltura = findViewById(R.id.edit_altura)
 
-            val i = Intent(this, ResultadoActivity::class.java)
-            i.putExtra("peso", peso)
-            i.putExtra("altura", altura)
-            startActivity(i)
+        btnCalcular.setOnClickListener {
+            val intent = Intent(this, ResultadoActivity::class.java)
 
-            binding.editAltura.setText("")
-            binding.editPeso.setText("")
+            val peso = editPeso.text.toString()
+            val altura = editAltura.text.toString()
+
+            if (peso.isNotEmpty() && altura.isNotEmpty()) {
+                intent.putExtra("peso", peso.toDouble())
+                intent.putExtra("altura", altura.toDouble())
+            }
+
+            startActivity(intent)
         }
     }
 }

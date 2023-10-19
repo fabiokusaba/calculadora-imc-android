@@ -1,30 +1,43 @@
 package com.fabiokusaba.calculadoraimc
 
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.fabiokusaba.calculadoraimc.databinding.ActivityResultadoBinding
 
 class ResultadoActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityResultadoBinding
+    private lateinit var textPeso: TextView
+    private lateinit var textAltura: TextView
+    private lateinit var textResultado: TextView
+    private lateinit var btnVoltar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityResultadoBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_resultado)
 
-        val i = intent
-        val peso = i.getDoubleExtra("peso", 0.0)
-        val altura = i.getDoubleExtra("altura", 0.0)
+        textPeso = findViewById(R.id.text_peso)
+        textAltura = findViewById(R.id.text_altura)
+        textResultado = findViewById(R.id.text_resultado)
+        btnVoltar = findViewById(R.id.btn_voltar)
 
-        val imc = calcularImc(peso, altura)
-        val status = statusImc(imc)
+        val bundle = intent.extras
 
-        binding.textResultado.setText("Seu nível de IMC é: ${String.format("%.1f", imc)}, classificação: $status")
+        if (bundle != null) {
+            val peso = bundle.getDouble("peso")
+            val altura = bundle.getDouble("altura")
 
-        binding.buttonVoltar.setOnClickListener {
-            val i = Intent(this, MainActivity::class.java)
-            startActivity(i)
+            textPeso.text = "Peso informado $peso kg"
+            textAltura.text = "Altura informada $altura m"
+
+            val imc = calcularImc(peso, altura)
+
+            val resultadoImc = statusImc(imc)
+
+            textResultado.text = resultadoImc
+        }
+
+        btnVoltar.setOnClickListener {
+            finish()
         }
     }
 
@@ -34,17 +47,17 @@ class ResultadoActivity : AppCompatActivity() {
 
     fun statusImc(imc: Double) : String {
         if (imc <= 18.5) {
-            return "abaixo do peso"
+            return "Abaixo do peso"
         } else if (imc <= 24.9) {
-            return "peso ideal"
+            return "Peso normal"
         } else if (imc <= 29.9) {
-            return "acima do peso"
+            return "Sobrepeso"
         } else if (imc <= 34.9) {
-            return "obesidade grau I"
+            return "Obesidade grau I"
         } else if (imc <= 39.9) {
-            return "obesidade grau II"
+            return "Obesidade grau II"
         } else {
-            return "obesidade grau III"
+            return "Obesidade grau III"
         }
     }
 }
